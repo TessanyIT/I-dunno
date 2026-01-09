@@ -71,7 +71,7 @@ class SaveGame {
             multiplier,
             frenzyActive,
             autoClickers,
-            mice: mice.map(m => ({ angle: m.angle }))
+            mice: (typeof mice !== "undefined" && mice) ? mice.map(m => ({ angle: m.angle })) : []
         };
     }
 
@@ -103,6 +103,9 @@ class SaveGame {
     }
 
     restoreMice(savedMice) {
+        // Only restore if there are saved mice
+        if (!savedMice || savedMice.length === 0) return;
+
         // Clear existing mice
         mice = [];
         const container = document.getElementById("mouse-container");
@@ -126,8 +129,8 @@ class SaveGame {
             });
         });
 
-        // Start animation if mice were restored
-        if (mice.length > 0) {
+        // Start animation if mice were restored and functions exist
+        if (mice.length > 0 && typeof startAutoClick !== "undefined" && typeof animateAllMice !== "undefined") {
             startAutoClick();
             animateAllMice();
         }
