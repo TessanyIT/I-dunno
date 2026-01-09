@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Game Center</title>
+</head>
+<header>
+    <div class="nav-bar">
+        <h3>Home</h3>
+        <h3>Shop</h3>
+        <h3>Themes</h3>
+    </div>
+</header>
+<body>
+    <div class="container">
+        <img id="cookie" src="images/transparent cookie.png" alt="Cookie">
+    </div>
+
+    <div id="shop-panel">
+        <h2>Shop</h2>
+        <div id="upgrades">
+            <div id="auto-upgrade-container">
+                <h2>Automatic Clicker</h2>
+                <h3 id="auto-clicker-level">Upgrade level: 0</h3>
+                <img src="images/auto upgrade.png" alt="clicker-upgrade" id="auto-upgrade">
+                <p>Automaticaly clicks for you.</p>
+                <p>You can buy it as many times as you want.</p>
+                <span id="auto-upgrade-count">Cost: 10</span>
+                <button id="upgrade-button">Buy</button>
+            </div>
+            <div id="multi-clicker">
+                <h2>Multi Clicker</h2>
+                <h3 id="multi-clicker-level">Upgrade level: 0</h3>
+                <img src="images/multiplier.png" alt="multiplier">
+                <p>Your clicks are multiplied.</p>
+                <p>You can buy it as many times as you want.</p>
+                <span id="multi-upgrade-count">Cost: 50</span>
+                <button id="upgrade-button2">Buy</button>
+            </div>
+            <div id="farm">
+                <h2>Farm</h2>
+                <h3 id="farm-level">Upgrade level: 0</h3>
+                <img src="images/cookie-farm.png" alt="farm" id="farm-pic">
+                <p>Creates a farm that gives you cookies every 30s.</p>
+                <p>Every next upgrade gives 100 more cookies</p>
+                <span id="farm-upgrade-count">Cost: 100</span>
+                <button id="upgrade-button3">Buy</button>
+            </div>
+            <div id="frenzy">
+                <h2>Frenzy</h2>
+                <img src="images/transparent frenzy.png" alt="frenzy" id="frenzy-pic">
+                <p>After every 60 seconds, frenzy activates and gives you 10 cookies per click.</p>
+                <span id="frenzy-upgrade-count">Cost: 150</span>
+                <button id="upgrade-button4">Buy</button>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="themes-panel">
+        <h2>Themes</h2>
+        <div id="themes-container">
+            <div id="themes1">
+                <img src="images/background1.jpg" id="theme1">
+                <button id="choose-button1">Choose</button>
+            </div>
+            <div id="themes2">
+                <img src="images/background2.jpg" id="theme-photo">
+                <button id="choose-button2">Choose</button>
+            </div>
+            <div id="themes3">
+                <img src="images/background3.jpg" id="theme-photo">
+                <button id="choose-button3">Choose</button>
+            </div>
+            <div id="themes4">
+                <img src="images/background4.jpg" id="theme-photo">
+                <button id="choose-button4">Choose</button>
+            </div>
+            <div id="themes5">
+                <img src="images/background5.jpg" id="theme-photo">
+                <button id="choose-button5">Choose</button>
+            </div>
+            <div id="themes0">
+                <img src="images/background0.jpg" id="theme-photo">
+                <button id="choose-button0">Choose</button>
+            </div>
+            <div id="themes-upload">
+                <img src="images/transparent-upload.png" id="theme-photo">
+                <p>Upload your own background!</p>
+                <button id="changeBgBtn">Upload</button>
+                <input type="file" id="bgUpload" accept="image/*" style="display: none;">
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="ui">
+        <div id="frenzy-ui">Frenzy: NOT BOUGHT</div>
+        <div id="level">Level: 1</div>
+        <div id="cookies">Cookies: 0</div>
+    </div>
+
+
+    <div id="counter-bar">
+        <div id="counter-fill"></div>
+        <span id="experience">Experience: 0/50</span>
+    </div>
+
+    <div id="mouse-container"></div>
+
+
+</body>
+<script src="classes/celebration.js"></script>
+<script src="classes/cookieClick.js"></script>
+<script src="classes/saveGame.js"></script>
+<script src="script.js"></script>
+</html>
