@@ -1,336 +1,241 @@
-let cookies = 0;
-let clickPower = 1;
-let experience = 0;
-let level = 1;
-let nextLevelCost = 50;
-let previousLevelCost = 0;
+let button1PaddingVertical = 50;
+let button1PaddingHorizontal = 140;
 
-let autoUpgradeCost = 10;
-let multiUpgradeCost = 50;
-let farmUpgradeCost = 100;
-let frenzyUpgradeCost = 150;
 
-let frenzyLevel = 0;
-let autoClickerLevel = 0;
-let multiClickerLevel = 0;
-let farmLevel = 0;
+let button2PaddingVertical = 50;
+let button2PaddingHorizontal = 140;
 
-let farms = 0;
-let multiplier = 1;
-let frenzyMultiplier = 10;
-let frenzyActive = false;
-let autoClickers = 0;
+let imageCounter = 1;
+let textCounter = 1;
+let buttonPhraseCounter = 1;
 
-const celebrationEffects = new CelebrationEffects();
+let counter = 1;
+function getNameFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get("name");
+    return name ? name.trim() : "";
+}
 
-let mice = [];
-let photos = [
-    "images/background1.jpg",
-    "images/background2.jpg",
-    "images/background3.jpg",
-    "images/background4.jpg",
-    "images/background5.jpg",
-    "images/background0.jpg"
+function setTitleWithName() {
+    const title = document.querySelector("h1");
+    if (!title) return;
+    const name = getNameFromQuery();
+    if (name) {
+        title.textContent = `Will you be my Valentine, ${name}?`;
+    } else {
+        title.textContent = "Will you be my Valentine?";
+    }
+}
+
+
+let phrases = [
+    "Pretty pleaseee",
+    "You really hate me don't you?",
+    "Why won't you click me?",
+    "Please click meee",
+    "I just want to be clicked",
+    "Don't you want to click me?",
+    "I promise I won't do anything bad",
+    "Click me, I dare you!",
+    "Are you sure you don't want to click me?",
+    "I can be your best friend if you click me!",
 ];
 
-const cookie = document.getElementById("cookie");
-// Cookie click
-document.getElementById("cookie").addEventListener("click", function () {
-    let gained = multiplier > 1 ? multiplier * clickPower : clickPower;
+let images = [
+    "images.png",
+    "images2.png",
+    "images3.png",
+    "images4.png",
+    "images5.png",
+    "images6.png",
+    "images7.png",
+    "images8.png",
+    "images9.png",
+    "images10.png",
+    "images11.png",
+];
 
-    if (frenzyActive) {
-        gained += frenzyMultiplier;
-    }
+let buttonPhrases = [
+    "No",
+    "Still no",
+    "Absolutely not",
+    "Not gonna happen",
+    "No way",
+    "Negative",
+    "I don't think so",
+    "Nope",
+    "Not interested",
+    "No thanks"
+];
 
-    cookies += gained;
-    experience++;
-
-    levelUp();
-    updateUI();
-});
-
-
-//Level up
-function levelUp() {
-    while (experience >= nextLevelCost) {
-        previousLevelCost = nextLevelCost;
-        level++;
-
-        celebrationEffects.trigger();
-        
-        // carry over any excess experience to the next level
-        experience -= previousLevelCost;
-        
-        nextLevelCost = Math.floor(nextLevelCost * 1.2) + 20;
-
-        updateUI();
-    }
+function phraseChange() {
+    const messageElement = document.getElementById("message");
+    messageElement.textContent = phrases[textCounter];
+    textCounter = (textCounter + 1) % phrases.length;
 }
 
-
-//Mouse upgrade
-document.getElementById("upgrade-button").addEventListener("click", function () {
-    if (cookies >= autoUpgradeCost) {
-        cookies -= autoUpgradeCost;
-        autoClickers++;
-
-        autoUpgradeCost = Math.floor(autoUpgradeCost * 1.2);
-        document.getElementById("auto-upgrade-count").textContent = "Cost: " + autoUpgradeCost;
-
-        autoClickerLevel++;
-        updateUI();
-        spawnMouse();
-    } else {
-        alert("Not enough cookies!");
-    }
-});
-
-//Multiplier upgrade
-document.getElementById("upgrade-button2").addEventListener("click", function () {
-    if (cookies >= multiUpgradeCost) {
-        cookies -= multiUpgradeCost;
-
-        multiUpgradeCost = Math.floor(multiUpgradeCost * 1.2);
-        document.getElementById("multi-upgrade-count").textContent = "Cost: " + multiUpgradeCost;
-
-        multiClickerLevel++;
-        multiplier++;
-        updateUI();
-    } else {
-        alert("Not enough cookies!");
-    }
-});
-
-//Farm upgrade
-document.getElementById("upgrade-button3").addEventListener("click", function () {
-    if (cookies >= farmUpgradeCost) {
-        cookies -= farmUpgradeCost;
-
-        farmUpgradeCost = Math.floor(farmUpgradeCost * 1.2);
-        document.getElementById("farm-upgrade-count").textContent = "Cost: " + farmUpgradeCost;
-
-        farmLevel++;
-        farms++;
-        updateUI();
-        startFarm();
-    } else {
-        alert("Not enough cookies!");
-    }
-});
-
-//Frenzy upgrade
-document.getElementById("upgrade-button4").addEventListener("click", function () {
-    if (cookies >= frenzyUpgradeCost) {
-        cookies -= frenzyUpgradeCost;
-
-        document.getElementById("frenzy-upgrade-count").textContent = "Cost: " + frenzyUpgradeCost;
-        document.getElementById("frenzy-ui").textContent = "Frenzy: WAITING";
-        document.getElementById("upgrade-button4").disabled = true;
-        document.getElementById("upgrade-button4").textContent = "Not for sale";
-
-        updateUI();
-        startFrenzy();
-
-    } else{
-        alert("Not enough cookies!");
-    }
-
-    
-});
-
-//Theme buttons
-document.getElementById("choose-button1").addEventListener("click", function () {
-    document.body.style.backgroundImage = "url('" + photos[0] + "')";
-});
-
-document.getElementById("choose-button2").addEventListener("click", function () {
-    document.body.style.backgroundImage = "url('" + photos[1] + "')";
-});
-
-
-document.getElementById("choose-button3").addEventListener("click", function () {
-    document.body.style.backgroundImage = "url('" + photos[2] + "')";
-});
-
-document.getElementById("choose-button4").addEventListener("click", function () {
-    document.body.style.backgroundImage = "url('" + photos[3] + "')";
-});
-
-document.getElementById("choose-button5").addEventListener("click", function () {
-    document.body.style.backgroundImage = "url('" + photos[4] + "')";
-});
-
-document.getElementById("choose-button0").addEventListener("click", function () {
-    document.body.style.backgroundImage = "url('" + photos[5] + "')";
-});
-
-//Custom background upload
-  const button = document.getElementById("changeBgBtn");
-  const input = document.getElementById("bgUpload");
-
-
-  button.addEventListener("click", () => {
-    input.click();
-  });
-
-  
-  input.addEventListener("change", () => {
-    const file = input.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      document.body.style.backgroundImage = `url(${e.target.result})`;
-    };
-    reader.readAsDataURL(file);
-  });
-
-//Frenzy
-function startFrenzy() {
-
-    setInterval(() => {
-        frenzyActive = true;
-        cookie.src = "images/gold cookie.png";
-        document.getElementById("frenzy-ui").textContent = "Frenzy: ACTIVE";
-        setTimeout(() => {
-            frenzyActive = false;
-            cookie.src = "images/transparent cookie.png";
-            document.getElementById("frenzy-ui").textContent = "Frenzy: WAITING";
-            startFrenzy();
-        }, 7000);
-    }, 60000);
+function imageChange() {
+    const imgElement = document.querySelector("img");
+    imgElement.src = images[imageCounter];
+    imageCounter = (imageCounter + 1) % images.length;
 }
 
-
-//Farm
-function startFarm(){
-    setInterval(() => {
-        cookies += (100 * farms);
-        updateUI();
-    }, 30000);
+function buttonPhraseChange() {
+    const button2Element = document.getElementById("button2");
+    button2Element.textContent = buttonPhrases[buttonPhraseCounter];
+    buttonPhraseCounter = (buttonPhraseCounter + 1) % buttonPhrases.length;
 }
 
-//Mouse auto clicker
-function startAutoClick() {
-    setInterval(() => {
-        cookies += autoClickers;
-
-        
-        cookie.classList.add("active");
-        setTimeout(() => cookie.classList.remove("active"), 100);
-
-        updateUI();
-    }, 2000);
+function applyButton1Padding() {
+    document.querySelector("button#button1").style.padding =
+        `${button1PaddingVertical}px ${button1PaddingHorizontal}px`;
 }
 
-//Mouse spawner
-function spawnMouse() {
-    const container = document.getElementById("mouse-container");
-    const mouse = document.createElement("img");
+function applyButton2Padding() {
+    document.querySelector("button#button2").style.padding =
+        `${button2PaddingVertical}px ${button2PaddingHorizontal}px`;
+}
 
-    mouse.src = "images/auto upgrade.png";
-    mouse.classList.add("auto-mouse");
+function getSafeTop() {
+    const title = document.querySelector("h1");
+    const message = document.getElementById("message");
+    const titleBottom = title ? title.getBoundingClientRect().bottom : 0;
+    const messageBottom = message ? message.getBoundingClientRect().bottom : 0;
+    return Math.ceil(Math.max(titleBottom, messageBottom) + 20);
+}
 
-    container.appendChild(mouse);
+function isOverlapping(rectA, rectB) {
+    return !(
+        rectA.right <= rectB.left ||
+        rectA.left >= rectB.right ||
+        rectA.bottom <= rectB.top ||
+        rectA.top >= rectB.bottom
+    );
+}
 
-    
-    let startAngle = Math.random() * Math.PI * 2;
+function moveButtonsRandomly() {
+    const button1 = document.getElementById("button1");
+    const button2 = document.getElementById("button2");
+    const safeTop = getSafeTop();
 
-    mice.push({
-        element: mouse,
-        angle: startAngle
+    [button1, button2].forEach((button) => {
+        if (!button || button.style.display === "none") return;
+        button.style.position = "absolute";
+        button.style.margin = "0";
     });
 
-    
-    if (mice.length === 1) {
-        startAutoClick();
-        animateAllMice();
-    }
+    const placeButton = (button, otherButton) => {
+        if (!button || button.style.display === "none") return;
+        const rect = button.getBoundingClientRect();
+        const maxLeft = Math.max(0, window.innerWidth - rect.width);
+        const maxTop = Math.max(safeTop, window.innerHeight - rect.height);
+        let attempt = 0;
+        let left = 0;
+        let top = safeTop;
+
+        while (attempt < 50) {
+            left = Math.floor(Math.random() * (maxLeft + 1));
+            top = Math.floor(
+                safeTop + Math.random() * Math.max(0, maxTop - safeTop)
+            );
+
+            button.style.left = `${left}px`;
+            button.style.top = `${top}px`;
+
+            if (!otherButton || otherButton.style.display === "none") break;
+            const rectA = button.getBoundingClientRect();
+            const rectB = otherButton.getBoundingClientRect();
+            if (!isOverlapping(rectA, rectB)) break;
+            attempt += 1;
+        }
+    };
+
+    placeButton(button1, button2);
+    placeButton(button2, button1);
 }
 
-//Mouse animation
-function animateAllMice() {
-    const cookieImg = document.getElementById("cookie");
+function expandButton1ToCoverPage() {
+    const button1 = document.getElementById("button1");
+    const safeTop = getSafeTop();
+    const availableHeight = Math.max(0, window.innerHeight - safeTop - 20);
+    const horizontalPadding = Math.max(20, Math.floor(window.innerWidth / 2) - 60);
+    const verticalPadding = Math.max(20, Math.floor(availableHeight / 2) - 60);
 
-    function update() {
-        const rect = cookieImg.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+    button1.style.position = "absolute";
+    button1.style.left = "10px";
+    button1.style.top = `${safeTop}px`;
+    button1.style.margin = "0";
 
-        const radius = 150; 
-
-        mice.forEach(mouse => {
-            
-            mouse.angle += 0.03;
-
-            const x = centerX + radius * Math.cos(mouse.angle);
-            const y = centerY + radius * Math.sin(mouse.angle);
-
-            mouse.element.style.left = (x - 25) + "px";
-            mouse.element.style.top = (y - 25) + "px";
-
-            
-            const dx = centerX - x;
-            const dy = centerY - y;
-
-            const rad = Math.atan2(dy, dx);
-            const deg = rad * (180 / Math.PI);
-
-            
-            mouse.element.style.transform = "rotate(" + (deg + 90) + "deg)";
-        });
-
-        requestAnimationFrame(update);
-    }
-
-    update();
+    button1PaddingHorizontal = horizontalPadding;
+    button1PaddingVertical = verticalPadding;
+    applyButton1Padding();
 }
 
-//Update UI
-function updateUI() {
-    document.getElementById("experience").textContent =
-        "Experience: " + experience + "/" + nextLevelCost;
-
-    document.getElementById("cookies").textContent =
-        "Cookies: " + cookies;
-
-    document.getElementById("level").textContent =
-        "Level: " + level;
-
-    document.getElementById("auto-clicker-level").textContent =
-        "Upgrade level: " + autoClickerLevel;
-
-    document.getElementById("multi-clicker-level").textContent =
-        "Upgrade level: " + multiClickerLevel;
-
-    document.getElementById("farm-level").textContent =
-        "Upgrade level: " + farmLevel;
-
-    let progress = (experience / nextLevelCost) * 100;
-    document.getElementById("counter-fill").style.width = progress + "%";
-
-    
-    saveGame.save(saveGame.getGameState());
-}
-
-//Navigation bar
-document.querySelector(".nav-bar h3:nth-child(2)").addEventListener("click", function () {
-    document.getElementById("shop-panel").classList.toggle("active");
-});
-
-document.querySelector(".nav-bar h3:nth-child(3)").addEventListener("click", function () {
-    document.getElementById("themes-panel").classList.toggle("active");
-});
-
-if (typeof saveGame !== "undefined") {
-    const savedState = saveGame.load();
-    if (savedState) {
-        saveGame.restoreGameState(savedState);
-        updateUI();
+document.getElementById("button1").addEventListener("click", function() {
+    if (counter === 1) {
+        const name = getNameFromQuery();
+        document.getElementById("message").textContent = `Wow, I wasnt expecting it to be that easy! I love you ${name}! ❤️`;
+        document.querySelector("img").src = "happy2.png";
+        document.querySelector("button#button1").style.display = "none";
+        document.querySelector("button#button2").style.display = "none";
+        document.querySelector("img").style.display = "block";
+        document.querySelector("button#button2").style.marginLeft = "320px";
     } else {
-        updateUI();
+        const name = getNameFromQuery();
+        document.getElementById("message").textContent = `YAAAY! I KNEW YOU WERE GOING TO DO IT! LOVE YOU TOO ${name}! ❤️`;
+        document.querySelector("img").src = "happy.png";
+        document.querySelector("button#button1").style.display = "none";
+        document.querySelector("button#button2").style.display = "none";
+        document.querySelector("img").style.display = "block";
+        document.querySelector("button#button2").style.marginLeft = "320px";
     }
-} else {
-    console.error("saveGame not loaded!");
-    updateUI();
-}
+    applyButton2Padding();
+});
+
+document.getElementById("button2").addEventListener("click", function() {
+    if (counter === 5) {
+        const result = confirm("Are you sure you want to keep rejecting me?");
+        if (result) {
+            const result2 = confirm("Are you REALLY sure?");
+            if (result2) {
+                counter++;
+            } else {
+                const name = getNameFromQuery();
+                document.getElementById("message").textContent = `YAAAY! I KNEW YOU WERE GOING TO DO IT! LOVE YOU TOO ${name}! ❤️`;
+                document.querySelector("img").src = "happy.png";
+                document.querySelector("button#button1").style.display = "none";
+                document.querySelector("button#button2").style.display = "none";
+                document.querySelector("img").style.display = "block";
+                document.querySelector("button#button2").style.marginLeft = "320px";
+            }
+        } else {
+            const name = getNameFromQuery();
+            document.getElementById("message").textContent = `YAAAY! I KNEW YOU WERE GOING TO DO IT! LOVE YOU TOO ${name}! ❤️`;
+            document.querySelector("img").src = "happy.png";
+            document.querySelector("button#button1").style.display = "none";
+            document.querySelector("button#button2").style.display = "none";
+            document.querySelector("img").style.display = "block";
+            document.querySelector("button#button2").style.marginLeft = "320px";
+        }
+    } else {
+        imageChange();
+        button1PaddingVertical += 10;
+        button1PaddingHorizontal += 16;
+        button2PaddingVertical -= 5;
+        button2PaddingHorizontal -= 14;
+        if (button2PaddingVertical <= 0) {
+        document.getElementById("button2").style.display = "none";
+        expandButton1ToCoverPage();
+        }
+        console.log(button1PaddingVertical, button1PaddingHorizontal);
+        console.log(button2PaddingVertical, button2PaddingHorizontal);
+        counter++;
+        applyButton1Padding();
+        applyButton2Padding();
+        moveButtonsRandomly();
+        phraseChange();
+        buttonPhraseChange();
+    }
+    
+});
+setTitleWithName();
